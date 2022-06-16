@@ -12,23 +12,17 @@ class Princess
             self.statusFan = bytes("AAA00042")
             self.counter = 0
         else
-            print("serial is not configured, define Serial_RxD and Serial_TxD\n")
+            raise 'assert_failed',  'serial is not configured, define Serial_RxD and Serial_TxD'
         end
     end
 
     def every_second()
-        if self.ser == nil
-            return
-        end
         self.counter += 1
         self.statusFan[3] = self.counter
         self.ser.write(self.statusFan)
     end
 
     def every_100ms()
-        if self.ser == nil
-            return
-        end
 
         if self.ser.available() >= 4
             self.statusFan = self.ser.read()
