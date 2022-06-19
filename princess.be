@@ -8,6 +8,9 @@ class Princess
     var statusFan
     var counter
     var status_power
+    var status_windmode
+    var status_timer
+    var status_swing
 
     def init()
         if gpio.pin(gpio.TXD) != -1 && gpio.pin(gpio.RXD) != -1
@@ -41,8 +44,25 @@ class Princess
         if payload_json != nil && payload_json.find("power") != nil 
             self.status_power = int(payload_json.find("power"))
             print("found power")
-            self.ser.write(self.statusFan)
+            self.updateFanControl()
         end
+        if payload_json != nil && payload_json.find("windmode") != nil 
+            self.status_windmode = int(payload_json.find("windmode"))
+            print("found windmode")
+            self.updateFanControl()
+        end
+        if payload_json != nil && payload_json.find("timer") != nil 
+            self.status_timer = int(payload_json.find("timer"))
+            print("found timer")
+            self.updateFanControl()
+        end
+        if payload_json != nil && payload_json.find("swing") != nil 
+            self.status_swing = int(payload_json.find("swing"))
+            print("found swing")
+            self.updateFanControl()
+        end
+
+        self.sendFanControl()
 
         # report the command as successful
         tasmota.resp_cmnd_done()
@@ -51,6 +71,13 @@ class Princess
       #- create a method for adding a button to the main menu -#
     def web_add_main_button()
         webserver.content_send("<p></p><button onclick='la(\"&m_toggle_main=1\");'>Toggle Main</button>")
+    end
+
+    def updateFanControl()
+    end
+
+    def sendFanControl()
+        self.ser.write(self.statusFan)
     end
 
     def kill()
